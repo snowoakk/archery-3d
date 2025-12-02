@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#87CEEB"/>
+    
+    <link rel="touch-icon" href="icon-192.png">
+    <meta name="mobile-web-app-status-bar" content="#87CEEB">
+
     <title>3D Archery Practice</title>
     <style>
         body {
@@ -181,6 +187,17 @@
     <script src="./three.min.js"></script>
     <script src="./cannon.min.js"></script>
     <script>
+        // Register Service Worker for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').then(registration => {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+
         // Game Constants
         const GRAVITY = -9.82;
         const TIME_STEP = 1 / 60;
