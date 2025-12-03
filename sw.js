@@ -1,6 +1,6 @@
 const CACHE_NAME = 'archery-3d-cache-v1';
 const urlsToCache = [
-  './archery.html',
+  './index.html',
   './three.min.js',
   './cannon.min.js',
   './manifest.json',
