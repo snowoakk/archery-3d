@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#87CEEB"/>
-    
-    <link rel="touch-icon" href="icon-192.png">
-    <meta name="mobile-web-app-status-bar" content="#87CEEB">
-
     <title>3D Archery Practice</title>
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#87CEEB">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="./icon-192.png">
     <style>
         body {
             margin: 0;
@@ -49,123 +48,40 @@
             pointer-events: auto;
         }
 
-        #info-panel div {
-            margin-bottom: 5px;
-        }
-
-        #wind-arrow {
-            display: inline-block;
-            transform-origin: center;
-            font-weight: bold;
-        }
+        #info-panel div { margin-bottom: 5px; }
+        #wind-arrow { display: inline-block; transform-origin: center; font-weight: bold; }
 
         #controls {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 400px;
-            background: rgba(255, 255, 255, 0.8);
-            padding: 20px;
-            border-radius: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            pointer-events: auto;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 400px; background: rgba(255,255,255,0.8);
+            padding: 20px; border-radius: 15px; display: flex; flex-direction: column; gap: 15px;
+            pointer-events: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
-        .control-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
+        .control-group { display:flex; flex-direction:column; gap:5px }
+        label { font-weight: bold; color: #333 }
+        input[type="range"] { width:100%; height:25px }
 
-        label {
-            font-weight: bold;
-            color: #333;
-        }
+        #shoot-btn { background:#ff4757; color:white; border:none; padding:15px; font-size:1.2rem; font-weight:bold; border-radius:8px; cursor:pointer; text-transform:uppercase }
+        #shoot-btn:active { background:#ff6b81 }
+        #shoot-btn:disabled { background:#ccc; cursor:not-allowed }
 
-        input[type="range"] {
-            width: 100%;
-            height: 25px;
-        }
-
-        #shoot-btn {
-            background: #ff4757;
-            color: white;
-            border: none;
-            padding: 15px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: background 0.2s;
-        }
-
-        #shoot-btn:active {
-            background: #ff6b81;
-        }
-
-        #shoot-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        #message-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            pointer-events: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            min-width: 200px;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        #next-round-btn {
-            background: #2ed573;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        #aim-instruction {
-            position: absolute;
-            bottom: 200px;
-            width: 100%;
-            text-align: center;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 1.2rem;
-            text-shadow: 1px 1px 2px black;
-            pointer-events: none;
-        }
+        #message-overlay { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,0.8); color:white; padding:30px; border-radius:15px; text-align:center; pointer-events:auto; display:flex; flex-direction:column; gap:15px; min-width:200px }
+        .hidden { display:none !important }
+        #next-round-btn { background:#2ed573; color:white; border:none; padding:10px 20px; border-radius:5px }
+        #aim-instruction { position:absolute; bottom:200px; width:100%; text-align:center; color:rgba(255,255,255,0.7); font-size:1.2rem; text-shadow:1px 1px 2px black; pointer-events:none }
     </style>
 </head>
 <body>
     <div id="game-container"></div>
-    
     <div id="ui-layer">
         <div id="info-panel">
             <div id="score-display">Score: 0</div>
             <div id="wind-display">Wind: <span id="wind-value">0</span> <span id="wind-arrow">→</span></div>
             <div id="distance-display">Distance: <span id="distance-value">0</span>m</div>
         </div>
+
+        <button id="retry-btn" style="position:absolute; top:20px; right:20px; background:rgba(255,71,87,0.8); color:white; border:none; padding:10px 20px; font-weight:bold; border-radius:8px; cursor:pointer; pointer-events:auto; text-transform:uppercase">Retry Game</button>
 
         <div id="message-overlay" class="hidden">
             <h2 id="round-result">Hit!</h2>
@@ -180,24 +96,48 @@
             </div>
             <button id="shoot-btn">SHOOT</button>
         </div>
-        
+
         <div id="aim-instruction">Drag screen to aim</div>
     </div>
 
-    <script src="./three.min.js"></script>
-    <script src="./cannon.min.js"></script>
+    <!-- Use local libraries if available to work offline with PWA; fallback to CDN if not present -->
     <script>
-        // Register Service Worker for PWA
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').then(registration => {
-                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                }, err => {
-                    console.log('ServiceWorker registration failed: ', err);
-                });
+        function loadScript(src){
+            return new Promise((resolve,reject)=>{
+                const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=reject;document.head.appendChild(s);
             });
         }
+    </script>
+    <script>
+        // Try to load local copies first, otherwise fall back to CDN
+        const scripts = [
+            {local: './three.min.js', cdn: 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'},
+            {local: './cannon.min.js', cdn: 'https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js'}
+        ];
 
+        (async function(){
+            for(const s of scripts){
+                try{
+                    await loadScript(s.local);
+                }catch(e){
+                    await loadScript(s.cdn);
+                }
+            }
+
+            // Register service worker for PWA
+            if('serviceWorker' in navigator){
+                window.addEventListener('load', ()=>{
+                    navigator.serviceWorker.register('./sw.js').then(reg=>console.log('Service Worker registered'), err=>console.log('Service Worker failed', err));
+                });
+            }
+
+            // Wait a tick to ensure libraries are loaded then initialize the game
+            setTimeout(()=>{ init(); animate(); }, 50);
+        })();
+    </script>
+
+    <!-- Game script (kept inline for simplicity) -->
+    <script>
         // Game Constants
         const GRAVITY = -9.82;
         const TIME_STEP = 1 / 60;
@@ -208,12 +148,11 @@
         let currentDistance = 30;
         let wind = { x: 0, z: 0, strength: 0 };
         let power = 30;
-        let lastArrowPosition = new THREE.Vector3();
+        let lastArrowPosition;
 
         // Three.js Variables
         let scene, camera, renderer;
         let arrowMesh, bowMesh, targetMesh, targetGroup;
-        let aimLine;
 
         // Cannon.js Variables
         let world;
@@ -223,489 +162,119 @@
         // Input Variables
         let isDragging = false;
         let previousMousePosition = { x: 0, y: 0 };
-        let aimAngles = { yaw: 0, pitch: 0.2 }; // Initial slight upward pitch
+        let aimAngles = { yaw: 0, pitch: 0.2 };
 
         // UI Elements
-        const scoreDisplay = document.getElementById('score-display');
-        const windValue = document.getElementById('wind-value');
-        const windArrow = document.getElementById('wind-arrow');
-        const distanceDisplay = document.getElementById('distance-value');
-        const powerSlider = document.getElementById('power-slider');
-        const shootBtn = document.getElementById('shoot-btn');
-        const messageOverlay = document.getElementById('message-overlay');
-        const roundResult = document.getElementById('round-result');
-        const roundScore = document.getElementById('round-score');
-        const nextRoundBtn = document.getElementById('next-round-btn');
+        const scoreDisplay = () => document.getElementById('score-display');
+        const windValueEl = () => document.getElementById('wind-value');
+        const windArrowEl = () => document.getElementById('wind-arrow');
+        const distanceDisplay = () => document.getElementById('distance-value');
+        const powerSlider = () => document.getElementById('power-slider');
+        const shootBtn = () => document.getElementById('shoot-btn');
+        const messageOverlay = () => document.getElementById('message-overlay');
+        const roundResult = () => document.getElementById('round-result');
+        const roundScore = () => document.getElementById('round-score');
+        const nextRoundBtn = () => document.getElementById('next-round-btn');
+        const retryBtn = () => document.getElementById('retry-btn');
 
-        // Initialize Game
-        init();
-        animate();
+        function init(){
+            // Ensure THREE and CANNON are available
+            if(typeof THREE === 'undefined' || typeof CANNON === 'undefined') return;
 
-        function init() {
-            // 1. Setup Three.js Scene
+            lastArrowPosition = new THREE.Vector3();
+
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x87CEEB);
             scene.fog = new THREE.Fog(0x87CEEB, 20, 100);
 
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            
-            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer = new THREE.WebGLRenderer({ antialias:true });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.shadowMap.enabled = true;
             document.getElementById('game-container').appendChild(renderer.domElement);
 
-            // Lights
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-            scene.add(ambientLight);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6); scene.add(ambientLight);
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8); dirLight.position.set(-10,20,10); dirLight.castShadow=true; scene.add(dirLight);
 
-            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-            dirLight.position.set(-10, 20, 10);
-            dirLight.castShadow = true;
-            dirLight.shadow.camera.top = 50;
-            dirLight.shadow.camera.bottom = -50;
-            dirLight.shadow.camera.left = -50;
-            dirLight.shadow.camera.right = 50;
-            scene.add(dirLight);
-
-            // 2. Setup Cannon.js World
-            world = new CANNON.World();
-            world.gravity.set(0, GRAVITY, 0);
-            world.broadphase = new CANNON.NaiveBroadphase();
-            world.solver.iterations = 10;
-
-            physicsMaterial = new CANNON.Material("physics");
-            const physicsContactMaterial = new CANNON.ContactMaterial(physicsMaterial, physicsMaterial, {
-                friction: 0.0,
-                restitution: 0.3
-            });
+            world = new CANNON.World(); world.gravity.set(0, GRAVITY, 0); world.broadphase = new CANNON.NaiveBroadphase(); world.solver.iterations = 10;
+            physicsMaterial = new CANNON.Material('physics');
+            const physicsContactMaterial = new CANNON.ContactMaterial(physicsMaterial, physicsMaterial, { friction:0.0, restitution:0.3 });
             world.addContactMaterial(physicsContactMaterial);
 
-            // 3. Create Objects
-            createGround();
-            createTarget();
-            createBowAndArrow();
+            createGround(); createTarget(); createBowAndArrow();
 
-            // 4. Event Listeners
             window.addEventListener('resize', onWindowResize, false);
-            
-            // Touch/Mouse for aiming - Attach to Canvas
+
             const canvas = renderer.domElement;
             canvas.addEventListener('pointerdown', onPointerDown);
             canvas.addEventListener('pointermove', onPointerMove);
             canvas.addEventListener('pointerup', onPointerUp);
-            canvas.addEventListener('pointerleave', onPointerUp); // Handle leaving canvas
+            canvas.addEventListener('pointerleave', onPointerUp);
 
-            // UI Controls
-            powerSlider.addEventListener('input', (e) => {
-                power = parseInt(e.target.value);
-            });
+            powerSlider().addEventListener('input', e=>{ power = parseInt(e.target.value) });
+            shootBtn().addEventListener('click', shoot);
+            nextRoundBtn().addEventListener('click', startRound);
+            retryBtn().addEventListener('click', retryGame);
 
-            shootBtn.addEventListener('click', shoot);
-            nextRoundBtn.addEventListener('click', startRound);
-
-            // Start first round
             startRound();
         }
 
-        function createGround() {
-            // Visuals
-            const geometry = new THREE.PlaneGeometry(200, 200);
-            const material = new THREE.MeshStandardMaterial({ color: 0x3a7e3a });
-            const ground = new THREE.Mesh(geometry, material);
-            ground.rotation.x = -Math.PI / 2;
-            ground.receiveShadow = true;
-            scene.add(ground);
+        function retryGame(){ score = 0; document.getElementById('score-display').innerText = 'Score: 0'; startRound(); }
 
-            // Physics
-            const groundShape = new CANNON.Plane();
-            const groundBody = new CANNON.Body({ mass: 0, material: physicsMaterial });
-            groundBody.addShape(groundShape);
-            groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
-            world.addBody(groundBody);
+        function createGround(){
+            const geometry = new THREE.PlaneGeometry(200,200); const material = new THREE.MeshStandardMaterial({ color:0x3a7e3a }); const ground = new THREE.Mesh(geometry, material); ground.rotation.x = -Math.PI/2; ground.receiveShadow = true; scene.add(ground);
+            const groundShape = new CANNON.Plane(); const groundBody = new CANNON.Body({ mass:0, material: physicsMaterial }); groundBody.addShape(groundShape); groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1,0,0), -Math.PI/2); world.addBody(groundBody);
         }
 
-        function createTarget() {
-            // Create target texture programmatically
-            const canvas = document.createElement('canvas');
-            canvas.width = 512;
-            canvas.height = 512;
-            const ctx = canvas.getContext('2d');
-            const centerX = 256;
-            const centerY = 256;
-            
-            const colors = ['white', 'black', '#00bcd4', 'red', '#ffeb3b']; // 1-2, 3-4, 5-6, 7-8, 9-10
-            
-            for (let i = 0; i < 10; i++) {
-                ctx.beginPath();
-                ctx.arc(centerX, centerY, 250 - (i * 25), 0, 2 * Math.PI);
-                ctx.fillStyle = colors[Math.floor(i / 2)];
-                ctx.fill();
-                ctx.strokeStyle = '#333';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-            }
-
+        function createTarget(){
+            const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 512; const ctx = canvas.getContext('2d'); const centerX = 256, centerY = 256;
+            const colors = ['white','black','#00bcd4','red','#ffeb3b'];
+            for(let i=0;i<10;i++){ ctx.beginPath(); ctx.arc(centerX, centerY, 250 - (i*25), 0, 2*Math.PI); ctx.fillStyle = colors[Math.floor(i/2)]; ctx.fill(); ctx.strokeStyle = '#333'; ctx.lineWidth=2; ctx.stroke(); }
             const texture = new THREE.CanvasTexture(canvas);
-            
-            // Target Mesh (Scaled up 25%)
-            const geometry = new THREE.BoxGeometry(1.25, 1.25, 0.1);
-            const material = new THREE.MeshStandardMaterial({ map: texture });
-            targetMesh = new THREE.Mesh(geometry, material);
-            targetMesh.castShadow = true;
-            
-            // Stand for target
-            const standGeo = new THREE.BoxGeometry(0.1, 1.5, 0.1);
-            const standMat = new THREE.MeshStandardMaterial({ color: 0x8B4513 });
-            const stand = new THREE.Mesh(standGeo, standMat);
-            stand.position.y = -0.75;
-            
-            targetGroup = new THREE.Group();
-            targetGroup.add(targetMesh);
-            targetGroup.add(stand);
-            scene.add(targetGroup);
-
-            // Target Physics (Scaled up 25%)
-            const shape = new CANNON.Box(new CANNON.Vec3(0.625, 0.625, 0.05));
-            targetBody = new CANNON.Body({ mass: 0, material: physicsMaterial });
-            targetBody.addShape(shape);
-            world.addBody(targetBody);
+            const geometry = new THREE.BoxGeometry(1.25,1.25,0.1); const material = new THREE.MeshStandardMaterial({ map: texture }); targetMesh = new THREE.Mesh(geometry, material); targetMesh.castShadow = true;
+            const standGeo = new THREE.BoxGeometry(0.1,1.5,0.1); const standMat = new THREE.MeshStandardMaterial({ color:0x8B4513 }); const stand = new THREE.Mesh(standGeo, standMat); stand.position.y = -0.75;
+            targetGroup = new THREE.Group(); targetGroup.add(targetMesh); targetGroup.add(stand); scene.add(targetGroup);
+            const shape = new CANNON.Box(new CANNON.Vec3(0.625,0.625,0.05)); targetBody = new CANNON.Body({ mass:0, material: physicsMaterial }); targetBody.addShape(shape); world.addBody(targetBody);
         }
 
-        function createBowAndArrow() {
-            // Bow (Visual only)
-            const bowGeo = new THREE.TorusGeometry(0.4, 0.02, 8, 20, Math.PI);
-            const bowMat = new THREE.MeshStandardMaterial({ color: 0x555555 });
-            bowMesh = new THREE.Mesh(bowGeo, bowMat);
-            bowMesh.rotation.z = -Math.PI / 2;
-            scene.add(bowMesh);
-
-            // Arrow (Visual)
-            const shaftGeo = new THREE.CylinderGeometry(0.01, 0.01, 0.8, 8);
-            const tipGeo = new THREE.ConeGeometry(0.02, 0.05, 8);
-            const fletchGeo = new THREE.PlaneGeometry(0.1, 0.05);
-
-            const arrowMat = new THREE.MeshStandardMaterial({ color: 0x8B4513 });
-            const tipMat = new THREE.MeshStandardMaterial({ color: 0x333333 });
-            const fletchMat = new THREE.MeshStandardMaterial({ color: 0xff0000, side: THREE.DoubleSide });
-
-            const shaft = new THREE.Mesh(shaftGeo, arrowMat);
-            shaft.rotation.x = -Math.PI / 2; // Point along Z
-            shaft.position.z = 0;
-
-            const tip = new THREE.Mesh(tipGeo, tipMat);
-            tip.rotation.x = -Math.PI / 2; // Point to -Z
-            tip.position.z = -0.4; // Front of shaft (negative Z)
-
-            const fletch1 = new THREE.Mesh(fletchGeo, fletchMat);
-            fletch1.position.z = 0.35; // Back of shaft
-            fletch1.rotation.y = Math.PI / 2;
-
-            const fletch2 = new THREE.Mesh(fletchGeo, fletchMat);
-            fletch2.position.z = 0.35; // Back of shaft
-
-            arrowMesh = new THREE.Group();
-            arrowMesh.add(shaft);
-            arrowMesh.add(tip);
-            arrowMesh.add(fletch1);
-            arrowMesh.add(fletch2);
-            scene.add(arrowMesh);
-
-            // Arrow Physics
-            const shape = new CANNON.Cylinder(0.01, 0.01, 0.8, 8);
-            // Cannon cylinder is Y-aligned, we need to rotate shape to match Z-aligned visual? 
-            // Actually, let's keep physics simple. A particle or small box might be easier, but cylinder is fine.
-            // We need to rotate the shape in the body local space if we want it to align with Z.
-            const q = new CANNON.Quaternion();
-            q.setFromAxisAngle(new CANNON.Vec3(1,0,0), -Math.PI/2);
-            
-            arrowBody = new CANNON.Body({ mass: 0.1, material: physicsMaterial });
-            arrowBody.addShape(shape, new CANNON.Vec3(0,0,0), q);
-            arrowBody.linearDamping = 0.01; // Reduced drag for better flight
-            arrowBody.angularDamping = 0.5; // Stabilize rotation
-            world.addBody(arrowBody);
-            
-            // Initially sleep the arrow
-            arrowBody.sleep();
+        function createBowAndArrow(){
+            const bowGeo = new THREE.TorusGeometry(0.4,0.02,8,20,Math.PI); const bowMat = new THREE.MeshStandardMaterial({ color:0x555555 }); bowMesh = new THREE.Mesh(bowGeo, bowMat); bowMesh.rotation.z = -Math.PI/2; scene.add(bowMesh);
+            const shaftGeo = new THREE.CylinderGeometry(0.01,0.01,0.8,8); const tipGeo = new THREE.ConeGeometry(0.02,0.05,8); const fletchGeo = new THREE.PlaneGeometry(0.1,0.05);
+            const arrowMat = new THREE.MeshStandardMaterial({ color:0x8B4513 }); const tipMat = new THREE.MeshStandardMaterial({ color:0x333333 }); const fletchMat = new THREE.MeshStandardMaterial({ color:0xff0000, side: THREE.DoubleSide });
+            const shaft = new THREE.Mesh(shaftGeo, arrowMat); shaft.rotation.x = -Math.PI/2; shaft.position.z = 0; const tip = new THREE.Mesh(tipGeo, tipMat); tip.rotation.x = -Math.PI/2; tip.position.z = -0.4;
+            const fletch1 = new THREE.Mesh(fletchGeo, fletchMat); fletch1.position.z = 0.35; fletch1.rotation.y = Math.PI/2; const fletch2 = new THREE.Mesh(fletchGeo, fletchMat); fletch2.position.z = 0.35;
+            arrowMesh = new THREE.Group(); arrowMesh.add(shaft); arrowMesh.add(tip); arrowMesh.add(fletch1); arrowMesh.add(fletch2); scene.add(arrowMesh);
+            const shape = new CANNON.Cylinder(0.01,0.01,0.8,8); const q = new CANNON.Quaternion(); q.setFromAxisAngle(new CANNON.Vec3(1,0,0), -Math.PI/2);
+            arrowBody = new CANNON.Body({ mass:0.1, material: physicsMaterial }); arrowBody.addShape(shape, new CANNON.Vec3(0,0,0), q); arrowBody.linearDamping = 0.01; arrowBody.angularDamping = 0.5; world.addBody(arrowBody); arrowBody.sleep();
         }
 
-        function startRound() {
-            gameState = 'READY';
-            messageOverlay.classList.add('hidden');
-            shootBtn.disabled = false;
+        function startRound(){ gameState='READY'; messageOverlay().classList.add('hidden'); shootBtn().disabled=false; currentDistance = Math.floor(Math.random()*10)+10; distanceDisplay().innerText = currentDistance; targetGroup.position.set(0,1.5,-currentDistance); targetBody.position.set(0,1.5,-currentDistance);
+            const angle = Math.random()*Math.PI*2; const strength = Math.random()*0.3; wind = { x: Math.cos(angle)*strength, z: Math.sin(angle)*strength, strength: strength };
+            windValueEl().innerText = strength.toFixed(1); windArrowEl().style.transform = `rotate(${-angle*180/Math.PI}deg)`; resetArrowPosition(); }
 
-            // Randomize Distance (10m to 20m) - Max 20m
-            currentDistance = Math.floor(Math.random() * 10) + 10;
-            distanceDisplay.innerText = currentDistance;
+        function resetArrowPosition(){ aimAngles.yaw=0; aimAngles.pitch=0.2; arrowBody.velocity.set(0,0,0); arrowBody.angularVelocity.set(0,0,0); arrowBody.position.set(0,1.5,0); const q = new CANNON.Quaternion(); q.setFromEuler(aimAngles.pitch, aimAngles.yaw, 0, 'XYZ'); arrowBody.quaternion.copy(q); arrowBody.sleep(); updateVisualsFromPhysics(); updateCamera(); }
 
-            // Position Target
-            targetGroup.position.set(0, 1.5, -currentDistance);
-            targetBody.position.set(0, 1.5, -currentDistance);
-            
-            // Randomize Wind
-            // Wind strength 0-0.3, direction random
-            const angle = Math.random() * Math.PI * 2;
-            const strength = Math.random() * 0.3; // Max wind force
-            wind = {
-                x: Math.cos(angle) * strength,
-                z: Math.sin(angle) * strength,
-                strength: strength
-            };
-            
-            // Update UI
-            windValue.innerText = strength.toFixed(1);
-            windArrow.style.transform = `rotate(${-angle * 180 / Math.PI}deg)`; // Visual rotation
+        function shoot(){ if(gameState!=='READY') return; gameState='FLYING'; shootBtn().disabled=true; arrowBody.wakeUp(); const forceMagnitude = 0.8 + (power/30); const direction = new THREE.Vector3(0,0,-1); direction.applyEuler(new THREE.Euler(aimAngles.pitch, aimAngles.yaw,0)); const impulse = new CANNON.Vec3(direction.x*forceMagnitude, direction.y*forceMagnitude, direction.z*forceMagnitude); arrowBody.applyImpulse(impulse, arrowBody.position); lastArrowPosition.copy(arrowBody.position); }
 
-            // Reset Arrow & Bow Position
-            resetArrowPosition();
-        }
+        function update(){ if(gameState==='FLYING'){ arrowBody.applyForce(new CANNON.Vec3(wind.x,0,wind.z), arrowBody.position); const velocity = arrowBody.velocity; if(velocity.lengthSquared()>0.5){ const direction = new THREE.Vector3(velocity.x, velocity.y, velocity.z).normalize(); const targetZ = direction.clone().negate(); const q = new THREE.Quaternion(); q.setFromUnitVectors(new THREE.Vector3(0,0,1), targetZ); arrowBody.quaternion.set(q.x,q.y,q.z,q.w); arrowBody.angularVelocity.set(0,0,0); } if(arrowBody.position.y < 0.05){ endRound(0,'Missed!'); return; } const currentPos = arrowBody.position; const targetZ = targetBody.position.z; if(lastArrowPosition.z > targetZ && currentPos.z <= targetZ){ const t = (targetZ - lastArrowPosition.z) / (currentPos.z - lastArrowPosition.z); const hitX = lastArrowPosition.x + (currentPos.x - lastArrowPosition.x) * t; const hitY = lastArrowPosition.y + (currentPos.y - lastArrowPosition.y) * t; const dx = hitX - 0; const dy = hitY - 1.5; const dist = Math.sqrt(dx*dx + dy*dy); if(dist <= 0.625){ arrowBody.position.set(hitX, hitY, targetZ); arrowBody.velocity.set(0,0,0); calculateScore(dist); return; } } if(arrowBody.position.z < -currentDistance - 5){ endRound(0,'Missed!'); return; } lastArrowPosition.copy(currentPos); }
+            let dt = TIME_STEP; if(gameState==='FLYING'){ dt = TIME_STEP/3 } world.step(dt); updateVisualsFromPhysics(); updateCamera(); }
 
-        function resetArrowPosition() {
-            // Reset Aim
-            aimAngles.yaw = 0;
-            aimAngles.pitch = 0.2;
+        function updateVisualsFromPhysics(){ arrowMesh.position.copy(arrowBody.position); arrowMesh.quaternion.copy(arrowBody.quaternion); if(gameState==='READY'){ bowMesh.position.set(0,1.5,0); bowMesh.rotation.set(aimAngles.pitch, aimAngles.yaw,0); bowMesh.rotateZ(-Math.PI/2); arrowBody.position.set(0,1.5,0); const q = new CANNON.Quaternion(); q.setFromEuler(aimAngles.pitch, aimAngles.yaw, 0, 'XYZ'); arrowBody.quaternion.copy(q); } }
 
-            // Reset Physics Body
-            arrowBody.velocity.set(0, 0, 0);
-            arrowBody.angularVelocity.set(0, 0, 0);
-            arrowBody.position.set(0, 1.5, 0);
-            
-            // Reset rotation to face forward (negative Z)
-            const q = new CANNON.Quaternion();
-            q.setFromEuler(aimAngles.pitch, aimAngles.yaw, 0, 'XYZ');
-            arrowBody.quaternion.copy(q);
-            
-            arrowBody.sleep(); // Stop physics until shot
+        function updateCamera(){ if(gameState==='READY'){ const offset = new THREE.Vector3(0,0.5,2); offset.applyEuler(new THREE.Euler(0, aimAngles.yaw,0)); camera.position.copy(arrowMesh.position).add(offset); camera.lookAt(arrowMesh.position.clone().add(new THREE.Vector3(0,0,-5))); } else if(gameState==='FLYING'){ const targetPos = arrowMesh.position.clone().add(new THREE.Vector3(0,0.3,1.0)); camera.position.lerp(targetPos,0.1); camera.lookAt(arrowMesh.position); } else if(gameState==='ENDED'){ const targetViewPos = new THREE.Vector3(0.5,1.5,-currentDistance + 2.5); camera.position.lerp(targetViewPos,0.05); camera.lookAt(new THREE.Vector3(0,1.5,-currentDistance)); } }
 
-            // Update Visuals
-            updateVisualsFromPhysics();
-            updateCamera();
-        }
+        function calculateScore(hitDist){ let dist = hitDist; if(dist===undefined){ const dx = arrowBody.position.x - targetBody.position.x; const dy = arrowBody.position.y - targetBody.position.y; dist = Math.sqrt(dx*dx + dy*dy); } let points=0; if(dist>0.625){ points=0 } else { points = 10 - Math.floor(dist / 0.0625) } endRound(points, points>0 ? 'Hit!' : 'Missed!'); }
 
-        function shoot() {
-            if (gameState !== 'READY') return;
-            
-            gameState = 'FLYING';
-            shootBtn.disabled = true;
-            arrowBody.wakeUp();
+        function endRound(points, message){ gameState='ENDED'; arrowBody.sleep(); score += points; document.getElementById('score-display').innerText = `Score: ${score}`; roundResult().innerText = message; roundScore().innerText = `${points} Points`; messageOverlay().classList.remove('hidden'); }
 
-            // Calculate force vector based on aim and power
-            // Power 10-50 -> Force magnitude
-            // Adjusted for realistic velocity
-            // Mass is 0.1
-            // Lower power range to encourage arcing shots
-            // Min (10): ~1.1
-            // Max (50): ~2.5
-            const forceMagnitude = 0.8 + (power / 30);
-            
-            // Direction from current rotation
-            const direction = new THREE.Vector3(0, 0, -1);
-            direction.applyEuler(new THREE.Euler(aimAngles.pitch, aimAngles.yaw, 0));
-            
-            const impulse = new CANNON.Vec3(
-                direction.x * forceMagnitude,
-                direction.y * forceMagnitude,
-                direction.z * forceMagnitude
-            );
+        // Input handling
+        function onPointerDown(e){ isDragging=true; previousMousePosition={ x: e.clientX, y: e.clientY }; }
+        function onPointerMove(e){ if(!isDragging || gameState!=='READY') return; const deltaX = e.clientX - previousMousePosition.x; const deltaY = e.clientY - previousMousePosition.y; const sensitivity = 0.005; aimAngles.yaw -= deltaX * sensitivity; aimAngles.pitch -= deltaY * sensitivity; aimAngles.pitch = Math.max(-0.5, Math.min(0.5, aimAngles.pitch)); aimAngles.yaw = Math.max(-1, Math.min(1, aimAngles.yaw)); previousMousePosition = { x: e.clientX, y: e.clientY }; }
+        function onPointerUp(){ isDragging = false }
 
-            // Apply impulse at the center of mass
-            arrowBody.applyImpulse(impulse, arrowBody.position);
-            
-            lastArrowPosition.copy(arrowBody.position);
-        }
+        function onWindowResize(){ camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); }
 
-        function update() {
-            if (gameState === 'FLYING') {
-                // Apply Wind Force
-                // Simple wind: constant force in wind direction
-                arrowBody.applyForce(new CANNON.Vec3(wind.x, 0, wind.z), arrowBody.position);
-                
-                // Aerodynamics: Align arrow with velocity
-                const velocity = arrowBody.velocity;
-                if (velocity.lengthSquared() > 0.5) {
-                    // Create a quaternion looking in velocity direction
-                    // Arrow points -Z
-                    const direction = new THREE.Vector3(velocity.x, velocity.y, velocity.z).normalize();
-                    const targetZ = direction.clone().negate(); // +Z points opposite to velocity
-                    
-                    const q = new THREE.Quaternion();
-                    q.setFromUnitVectors(new THREE.Vector3(0, 0, 1), targetZ);
-                    
-                    arrowBody.quaternion.set(q.x, q.y, q.z, q.w);
-                    arrowBody.angularVelocity.set(0, 0, 0);
-                }
-
-                // Check for ground hit
-                if (arrowBody.position.y < 0.05) {
-                    endRound(0, 'Missed!');
-                    return;
-                }
-
-                // Robust Collision Detection (Raycast/Segment check)
-                const currentPos = arrowBody.position;
-                const targetZ = targetBody.position.z; // The face of the target roughly
-                
-                // Check if we crossed the target plane
-                if (lastArrowPosition.z > targetZ && currentPos.z <= targetZ) {
-                    // Calculate intersection point
-                    // Lerp factor t where z = targetZ
-                    const t = (targetZ - lastArrowPosition.z) / (currentPos.z - lastArrowPosition.z);
-                    const hitX = lastArrowPosition.x + (currentPos.x - lastArrowPosition.x) * t;
-                    const hitY = lastArrowPosition.y + (currentPos.y - lastArrowPosition.y) * t;
-                    
-                    // Check if within target bounds (0.625 radius approx, or box 1.25x1.25)
-                    // Target center is (0, 1.5)
-                    const dx = hitX - 0;
-                    const dy = hitY - 1.5;
-                    const dist = Math.sqrt(dx*dx + dy*dy);
-                    
-                    if (dist <= 0.625) {
-                        // Snap arrow to hit point for visual
-                        arrowBody.position.set(hitX, hitY, targetZ);
-                        arrowBody.velocity.set(0,0,0);
-                        calculateScore(dist);
-                        return;
-                    }
-                }
-                
-                // Check if arrow went too far
-                if (arrowBody.position.z < -currentDistance - 5) {
-                    endRound(0, 'Missed!');
-                    return;
-                }
-                
-                lastArrowPosition.copy(currentPos);
-            }
-
-            // Step Physics
-            // Slow motion when flying
-            let dt = TIME_STEP;
-            if (gameState === 'FLYING') {
-                dt = TIME_STEP / 3; // 3x Slow motion
-            }
-            world.step(dt);
-
-            // Sync Visuals
-            updateVisualsFromPhysics();
-            
-            // Update Camera
-            updateCamera();
-        }
-
-        function updateVisualsFromPhysics() {
-            arrowMesh.position.copy(arrowBody.position);
-            arrowMesh.quaternion.copy(arrowBody.quaternion);
-
-            // Bow follows aim when ready
-            if (gameState === 'READY') {
-                bowMesh.position.set(0, 1.5, 0);
-                bowMesh.rotation.set(aimAngles.pitch, aimAngles.yaw, 0);
-                // Adjust bow visual rotation to match geometry
-                bowMesh.rotateZ(-Math.PI/2); 
-                
-                // Sync arrow to aim exactly when ready (override physics drift)
-                arrowBody.position.set(0, 1.5, 0);
-                const q = new CANNON.Quaternion();
-                q.setFromEuler(aimAngles.pitch, aimAngles.yaw, 0, 'XYZ');
-                arrowBody.quaternion.copy(q);
-            }
-        }
-
-        function updateCamera() {
-            if (gameState === 'READY') {
-                // 3rd person behind archer
-                // Calculate offset based on aim
-                const offset = new THREE.Vector3(0, 0.5, 2);
-                offset.applyEuler(new THREE.Euler(0, aimAngles.yaw, 0));
-                
-                camera.position.copy(arrowMesh.position).add(offset);
-                camera.lookAt(arrowMesh.position.clone().add(new THREE.Vector3(0, 0, -5)));
-            } else if (gameState === 'FLYING') {
-                // Follow arrow closer
-                const targetPos = arrowMesh.position.clone().add(new THREE.Vector3(0, 0.3, 1.0));
-                camera.position.lerp(targetPos, 0.1);
-                camera.lookAt(arrowMesh.position);
-            } else if (gameState === 'ENDED') {
-                // Look at target board to see hit
-                const targetViewPos = new THREE.Vector3(0.5, 1.5, -currentDistance + 2.5);
-                camera.position.lerp(targetViewPos, 0.05);
-                camera.lookAt(new THREE.Vector3(0, 1.5, -currentDistance));
-            }
-        }
-
-        function calculateScore(hitDist) {
-            // Distance from center of target
-            let dist = hitDist;
-            if (dist === undefined) {
-                const dx = arrowBody.position.x - targetBody.position.x;
-                const dy = arrowBody.position.y - targetBody.position.y;
-                dist = Math.sqrt(dx*dx + dy*dy);
-            }
-            
-            // Target radius is 0.625 (25% bigger than 0.5)
-            // 10 rings, each 0.0625 wide
-            let points = 0;
-            if (dist > 0.625) {
-                points = 0;
-            } else {
-                points = 10 - Math.floor(dist / 0.0625);
-            }
-            
-            endRound(points, points > 0 ? 'Hit!' : 'Missed!');
-        }
-
-        function endRound(points, message) {
-            gameState = 'ENDED';
-            arrowBody.sleep(); // Stop physics
-            
-            score += points;
-            scoreDisplay.innerText = `Score: ${score}`;
-            
-            roundResult.innerText = message;
-            roundScore.innerText = `${points} Points`;
-            messageOverlay.classList.remove('hidden');
-        }
-
-        // Input Handling
-        function onPointerDown(event) {
-            isDragging = true;
-            previousMousePosition = { x: event.clientX, y: event.clientY };
-        }
-
-        function onPointerMove(event) {
-            if (!isDragging || gameState !== 'READY') return;
-
-            const deltaX = event.clientX - previousMousePosition.x;
-            const deltaY = event.clientY - previousMousePosition.y;
-
-            // Adjust sensitivity
-            const sensitivity = 0.005;
-
-            aimAngles.yaw -= deltaX * sensitivity;
-            aimAngles.pitch -= deltaY * sensitivity;
-
-            // Clamp pitch
-            aimAngles.pitch = Math.max(-0.5, Math.min(0.5, aimAngles.pitch));
-            // Clamp yaw
-            aimAngles.yaw = Math.max(-1, Math.min(1, aimAngles.yaw));
-
-            previousMousePosition = { x: event.clientX, y: event.clientY };
-        }
-
-        function onPointerUp() {
-            isDragging = false;
-        }
-
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            update();
-            renderer.render(scene, camera);
-        }
+        function animate(){ requestAnimationFrame(animate); update(); if(renderer && scene && camera) renderer.render(scene, camera); }
     </script>
 </body>
 </html>
